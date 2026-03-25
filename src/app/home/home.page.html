@@ -1,0 +1,143 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button>
+        <img src="../../assets/menu_bar.svg" />
+      </ion-menu-button>
+    </ion-buttons>
+    <ion-title class="store-title">Joyeria Infinity</ion-title>
+    <ion-buttons slot="end">
+      <ion-button class="cart-btn" routerLink="/my-cart" routerDirection="forward">
+        <ion-icon name="cart-outline" color="dark"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="infinity-content" style="background-color: aliceblue;">
+  <!-- Buscador -->
+  <div class="search-wrapper ion-padding-horizontal">
+    <ion-item lines="none" class="search-item">
+      <ion-icon name="search-outline" slot="start" class="search-icon"></ion-icon>
+      <ion-input placeholder="Buscar productos..."></ion-input>
+    </ion-item>
+  </div>
+
+  <!-- Banner Promocional Principal -->
+  <div class="banner-wrapper ion-padding-horizontal">
+    <div class="promo-banner">
+      <div class="banner-bg-circles">
+        <div class="circle circle-1"></div>
+        <div class="circle circle-2"></div>
+        <div class="circle circle-3"></div>
+      </div>
+      <div class="banner-content">
+        <span class="banner-tag">Oferta especial</span>
+        <h2 class="banner-title">Elegancia y Estilo<br> en Cada Detalle</h2>
+        <p class="banner-description">Descubre nuestra colección exclusiva de joyas</p>
+        <ion-button class="banner-btn" size="small" routerLink="/categories">
+          Ver ofertas
+          <ion-icon name="arrow-forward-outline" slot="end"></ion-icon>
+        </ion-button>
+      </div>
+      <div class="banner-image">
+        <ion-icon name="bag-handle-outline"></ion-icon>
+      </div>
+    </div>
+  </div>
+
+  <!-- Categorías como Chips -->
+  <div class="section-header ion-padding-horizontal">
+    <h2 class="section-title">Categorías</h2>
+    <p class="section-link" routerLink="/categories">Ver todo</p>
+  </div>
+
+  <div class="categories-scroll ion-padding-start">
+    <div
+      class="category-chip"
+      *ngFor="let categoria of categorias"
+      [routerLink]="['/category', categoria.id]"
+      [class.active]="categoriaActiva === categoria.id"
+      (click)="categoriaActiva = categoria.id"
+    >
+      <div class="chip-icon">
+        <!-- WooCommerce devuelve categoria.image.src, no paht_img -->
+        <img *ngIf="categoria.image" [src]="categoria.image.src" [alt]="categoria.name" />
+        <ion-icon *ngIf="!categoria.image" name="grid-outline"></ion-icon>
+      </div>
+      <!-- WooCommerce usa .name, no .titulo -->
+      <span class="chip-label">{{ categoria.name }}</span>
+    </div>
+  </div>
+
+
+  <!-- Productos reales -->
+   <div class="section-header ion-padding-horizontal">
+    <h2 class="section-title">Productos Recientes</h2>
+    <p class="section-link">Ver todo</p>
+  </div>
+  <div class="products-scroll ion-padding-start">
+    <div
+      class="product-card"
+      *ngFor="let producto of productos"
+      [routerLink]="['/item-details', producto.id]"
+      routerDirection="forward"
+    >
+      <div class="product-img-wrapper">
+        <img
+          [src]="producto.images[0]?.src"
+          [alt]="producto.name"
+        />
+        <!-- Badge de oferta -->
+        <span class="sale-badge" *ngIf="producto.on_sale">Oferta</span>
+      </div>
+      <div class="product-info">
+        <p class="product-name">{{ producto.name }}</p>
+        <div class="product-footer">
+          <div class="price-group">
+            <!-- Precio tachado si está en oferta -->
+            <span class="regular-price" *ngIf="producto.on_sale">
+              ${{ producto.regular_price }}
+            </span>
+            <span class="product-price">${{ producto.price }}</span>
+          </div>
+          <button class="add-btn">
+            <ion-icon name="add-outline"></ion-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+ 
+  <!-- Productos Recientes --
+  <div class="section-header ion-padding-horizontal">
+    <h2 class="section-title">Productos Recientes</h2>
+    <p class="section-link">Ver todo</p>
+  </div>
+  -->
+ 
+  <!--
+  <div class="products-scroll ion-padding-start" style="padding-bottom: 24px;">
+    <div
+      class="product-card"
+      
+      [routerLink]="['/item-details']"
+      routerDirection="forward"
+    >
+      <div class="product-img-wrapper">
+        <img src="" alt="">
+      </div>
+      <div class="product-info">
+        <p class="product-name">producto.nombre</p>
+        <div class="product-footer">
+          <span class="product-price">producto.costo</span>
+          <button class="add-btn">
+            <ion-icon name="add-outline"></ion-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  -->
+
+</ion-content>

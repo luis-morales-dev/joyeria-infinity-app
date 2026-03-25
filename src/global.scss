@@ -1,0 +1,86 @@
+/*
+ * App Global CSS
+ * ----------------------------------------------------------------------------
+ * Put style rules here that you want to apply globally. These styles are for
+ * the entire app and not just one component. Additionally, this file can be
+ * used as an entry point to import other CSS/Sass files to be included in the
+ * output CSS.
+ * For more information on global stylesheets, visit the documentation:
+ * https://ionicframework.com/docs/layout/global-stylesheets
+ */
+
+/* Core CSS required for Ionic components to work properly */
+@import "~@ionic/angular/css/core.css";
+
+/* Basic CSS for apps built with Ionic */
+@import "~@ionic/angular/css/normalize.css";
+@import "~@ionic/angular/css/structure.css";
+@import "~@ionic/angular/css/typography.css";
+@import '~@ionic/angular/css/display.css';
+
+/* Optional CSS utils that can be commented out */
+@import "~@ionic/angular/css/padding.css";
+@import "~@ionic/angular/css/float-elements.css";
+@import "~@ionic/angular/css/text-alignment.css";
+@import "~@ionic/angular/css/text-transformation.css";
+@import "~@ionic/angular/css/flex-utils.css";
+
+// Definimos los colores y fuentes de la APP
+:root {
+  --infinity-primary:       #ecb7c7;   
+  --infinity-primary-light: #f7e2e8;
+  --infinity-accent:        #c794a4;   
+  --infinity-accent-soft:   #fdf7f9;
+  --infinity-surface:       #FFFFFF;
+  --infinity-bg:            #F4F4F4;
+  --infinity-bg-dark:       #fdf7f9;
+  --infinity-text:          #1A2B3C;
+  --infinity-text-muted:    #6B7C93;
+  --infinity-border:        #DDE5EF;
+  --infinity-card-bg:       #F4F4F4;
+  --infinity-shadow-sm:     0 2px 8px rgba(10, 92, 138, 0.08);
+  --infinity-shadow-md:     0 6px 20px rgba(10, 92, 138, 0.13);
+  --infinity-radius:        5px;
+  --infinity-radius-sm:     8px;
+  --infinity-font:          'Marcellus SC', serif;
+  --infinity-font-alt:      'Lora', serif;
+}
+
+h1,h2,h3,h4,h5,h6 {
+    font-family:  var(--infinity-font);
+}
+
+p{
+    font-family: var(--infinity-font-alt);
+}
+
+// Removing ion-button focus outline
+ion-button:focus {
+    outline: none !important;
+}
+
+ion-buttons:focus {
+    outline: none !important;
+}
+
+// Removing iOS and Android Header line for entire app
+ion-toolbar {
+    --border-width: 0 !important;
+}
+
+.header-md::after {
+    background: none;
+}
+
+.notification {
+    span {
+        background-color: #F5576C;
+        border-radius: 50%;
+        width: 10px;
+        height: 10px;
+        position: absolute;
+        top: 10%;
+        right: 10%;
+    }
+}
+

@@ -1,0 +1,165 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="transparent-toolbar">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home" class="back-btn"></ion-back-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button class="cart-btn" routerLink="/my-cart">
+        <ion-icon name="cart-outline" color="dark"></ion-icon>
+        <span class="cart-badge" *ngIf="cartCount > 0">{{ cartCount }}</span>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+  <!-- Skeleton loader -->
+  <ng-container *ngIf="isLoading">
+    <ion-skeleton-text animated class="skeleton-gallery"></ion-skeleton-text>
+    <div class="detail-body">
+      <ion-skeleton-text animated style="width:60%;height:14px;border-radius:6px;margin-bottom:10px;"></ion-skeleton-text>
+      <ion-skeleton-text animated style="width:40%;height:22px;border-radius:6px;margin-bottom:20px;"></ion-skeleton-text>
+      <ion-skeleton-text animated style="width:100%;height:12px;border-radius:4px;margin-bottom:6px;"></ion-skeleton-text>
+      <ion-skeleton-text animated style="width:90%;height:12px;border-radius:4px;margin-bottom:6px;"></ion-skeleton-text>
+      <ion-skeleton-text animated style="width:75%;height:12px;border-radius:4px;"></ion-skeleton-text>
+    </div>
+  </ng-container>
+
+  <!-- Contenido real -->
+  <ng-container *ngIf="!isLoading && producto">
+
+    <!-- Galería de imágenes -->
+    <div class="gallery-wrapper">
+      <swiper-container
+        #swiper
+        [options]="swiperOpts"
+        (slidechange)="onSlideChange($event)"
+      >
+        <swiper-slide *ngFor="let img of producto.images">
+          <img [src]="img.src" [alt]="img.alt || producto.name" class="gallery-img" />
+        </swiper-slide>
+      </swiper-container>
+
+      <!-- Indicadores de página -->
+      <div class="gallery-dots" *ngIf="producto.images.length > 1">
+        <span
+          class="dot"
+          *ngFor="let img of producto.images; let i = index"
+          [class.active]="i === activeSlide"
+        ></span>
+      </div>
+
+      <!-- Badge oferta -->
+      <span class="sale-badge" *ngIf="producto.on_sale">Oferta</span>
+
+      <!-- Badge sin stock -->
+      <span class="stock-badge out" *ngIf="producto.stock_status === 'outofstock'">
+        Sin stock
+      </span>
+    </div>
+
+    <!-- Cuerpo del detalle -->
+    <div class="detail-body">
+
+      <!-- Nombre y precio -->
+      <div class="product-header">
+        <div class="name-row">
+          <h1 class="product-name">{{ producto.name }}</h1>
+        </div>
+        <div class="price-row">
+          <span class="regular-price" *ngIf="producto.on_sale">
+            ${{ producto.regular_price }}
+          </span>
+          <span class="product-price">${{ producto.price }}</span>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Variaciones -->
+      <div class="variations-section" *ngIf="variaciones.length > 0">
+
+        <div class="variation-group" *ngFor="let variacion of variaciones">
+          <p class="variation-label">{{ variacion.name }}</p>
+
+          <!-- Chips de color -->
+          <div class="variation-options" *ngIf="variacion.type === 'color'">
+            <button
+              class="color-chip"
+              *ngFor="let opcion of variacion.options"
+              [style.background]="opcion.value"
+              [class.selected]="selecciones[variacion.name] === opcion.label"
+              (click)="seleccionarVariacion(variacion.name, opcion.label)"
+              [title]="opcion.label"
+            ></button>
+          </div>
+
+          <!-- Chips de texto (talla, material, etc.) -->
+          <div class="variation-options" *ngIf="variacion.type !== 'color'">
+            <button
+              class="text-chip"
+              *ngFor="let opcion of variacion.options"
+              [class.selected]="selecciones[variacion.name] === opcion.label"
+              (click)="seleccionarVariacion(variacion.name, opcion.label)"
+            >
+              {{ opcion.label }}
+            </button>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+      </div>
+
+      <!-- Cantidad -->
+      <div class="quantity-section">
+        <p class="section-label">Cantidad</p>
+        <div class="quantity-control">
+          <button class="qty-btn" (click)="cambiarCantidad(-1)" [disabled]="cantidad <= 1">
+            <ion-icon name="remove-outline"></ion-icon>
+          </button>
+          <span class="qty-value">{{ cantidad }}</span>
+          <button class="qty-btn" (click)="cambiarCantidad(1)">
+            <ion-icon name="add-outline"></ion-icon>
+          </button>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Descripción -->
+      <div class="description-section" *ngIf="producto.short_description">
+        <p class="section-label">Descripción</p>
+        <div
+          class="description-text"
+          [class.expanded]="descExpanded"
+          [innerHTML]="producto.short_description"
+        ></div>
+        <button class="expand-btn" (click)="descExpanded = !descExpanded">
+          {{ descExpanded ? 'Ver menos' : 'Ver más' }}
+          <ion-icon [name]="descExpanded ? 'chevron-up-outline' : 'chevron-down-outline'"></ion-icon>
+        </button>
+      </div>
+
+    </div>
+  </ng-container>
+
+</ion-content>
+
+<!-- Footer con botón agregar al carrito -->
+<ion-footer class="cart-footer" *ngIf="!isLoading && producto">
+  <div class="footer-inner">
+    <div class="total-preview">
+      <span class="total-label">Total</span>
+      <span class="total-price">${{ totalPrecio }}</span>
+    </div>
+    <ion-button
+      class="add-cart-btn"
+      [disabled]="producto.stock_status === 'outofstock'"
+      (click)="agregarAlCarrito()"
+    >
+      <ion-icon name="cart-outline" slot="start"></ion-icon>
+      Agregar al carrito
+    </ion-button>
+  </div>
+</ion-footer>
