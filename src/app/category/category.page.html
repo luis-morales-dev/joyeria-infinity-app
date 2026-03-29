@@ -6,42 +6,87 @@
       </ion-menu-button>
     </ion-buttons>
     <ion-buttons slot="end">
-      <!--<ion-button class="notification">
-        <ion-icon name="notifications-outline" color="dark"></ion-icon>
-        <span>&nbsp;</span>
-      </ion-button>-->
       <ion-button class="filter" routerLink="/my-cart" routerDirection="forward">
-        <!--<ion-icon name="funnel-outline" color="dark"></ion-icon>-->
         <ion-icon name="cart-outline" color="dark"></ion-icon>
       </ion-button>
+      <!--
+        <ion-button class="cart-btn" routerLink="/my-cart">
+          <ion-icon name="cart-outline" color="dark"></ion-icon>
+          <span class="cart-badge" *ngIf="cartCount > 0">{{ cartCount }}</span>
+        </ion-button>
+      -->
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <div class="search ion-padding">
-    <ion-item lines="none">
-      <ion-input placeholder="Buscar productos"></ion-input>
-      <ion-icon name="search-outline" slot="start"></ion-icon>
-    </ion-item>
-  </div>
 
   <div class="title ion-padding">
     <h2>Productos</h2>
     <p routerLink="/categories" routerDirection="back">Regresar</p>
   </div>
 
-  <ion-grid>
-    <ion-row class="product-grid">
-      <h5 class="ion-text-center">{{msg_cat}}</h5>
-      <ion-col size="6" *ngFor="let producto of Productos">
-        <ion-col class="ion-text-left" [routerLink]="['/item-details', producto.id]" routerDirection="forward">
-          <img src="{{producto.imagenes[0].path_imagen}}"> 
-          <p>${{ producto.costo }}</p>
-          <h6>{{ producto.nombre }}</h6>
-        </ion-col>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+  <!-- Skeleton loader -->
+  <div class="products-grid" *ngIf="isLoading">
+    <div class="product-card skeleton-card" *ngFor="let i of [1,2,3,4,5,6]">
+      <ion-skeleton-text animated class="skeleton-img"></ion-skeleton-text>
+      <div class="product-info">
+        <ion-skeleton-text animated style="width:80%;height:12px;border-radius:4px;margin-bottom:6px;"></ion-skeleton-text>
+        <ion-skeleton-text animated style="width:50%;height:14px;border-radius:4px;"></ion-skeleton-text>
+      </div>
+    </div>
+  </div>
+
+  <!-- Grid de productos -->
+  <div class="products-grid" *ngIf="!isLoading && productos.length > 0">
+    <div
+      class="product-card"
+      *ngFor="let producto of productos"
+      [routerLink]="['/item-details', producto.id]"
+      routerDirection="forward"
+    >
+      <div class="product-img-wrapper">
+        <img
+          [src]="producto.images[0]?.src"
+          [alt]="producto.name"
+          class="product-img"
+        />
+        <span class="sale-badge" *ngIf="producto.on_sale">Oferta</span>
+        <span class="stock-badge" *ngIf="producto.stock_status === 'outofstock'">Sin stock</span>
+      </div>
+      <div class="product-info">
+        <p class="product-name">{{ producto.name }}</p>
+        <div class="product-footer">
+          <div class="price-group">
+            <span class="regular-price" *ngIf="producto.on_sale">${{ producto.regular_price }}</span>
+            <span class="product-price">${{ producto.price }}</span>
+          </div>
+          <button class="add-btn" (click)="agregarAlCarrito($event, producto)">
+            <ion-icon name="add-outline"></ion-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Paginación — cargar más -->
+  <div class="load-more-wrapper" *ngIf="!isLoading && hayMas">
+    <ion-button
+      fill="outline"
+      class="load-more-btn"
+      [disabled]="isLoadingMore"
+      (click)="cargarMas()"
+    >
+      <ion-spinner name="crescent" *ngIf="isLoadingMore" slot="start"></ion-spinner>
+      {{ isLoadingMore ? 'Cargando...' : 'Ver más productos' }}
+    </ion-button>
+  </div>
+
+  <!-- Estado vacío -->
+  <div class="empty-state" *ngIf="!isLoading && productos.length === 0">
+    <ion-icon name="bag-outline"></ion-icon>
+    <p>No hay productos en esta categoría</p>
+    <ion-button fill="clear" routerLink="/categories">Ver otras categorías</ion-button>
+  </div>
 
 </ion-content>

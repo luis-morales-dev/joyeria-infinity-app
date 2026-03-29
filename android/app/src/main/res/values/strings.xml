@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">joyeria-infinity-app</string>
+    <string name="title_activity_main">joyeria-infinity-app</string>
+    <string name="package_name">com.mx.joyeriainfinity.app</string>
+    <string name="custom_url_scheme">com.mx.joyeriainfinity.app</string>
+</resources>

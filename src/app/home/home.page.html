@@ -74,7 +74,7 @@
   <!-- Productos reales -->
    <div class="section-header ion-padding-horizontal">
     <h2 class="section-title">Productos Recientes</h2>
-    <p class="section-link">Ver todo</p>
+    <!--<p class="section-link">Ver todo</p>-->
   </div>
   <div class="products-scroll ion-padding-start">
     <div
@@ -101,7 +101,7 @@
             </span>
             <span class="product-price">${{ producto.price }}</span>
           </div>
-          <button class="add-btn">
+          <button class="add-btn" (click)="agregarAlCarrito($event, producto)">
             <ion-icon name="add-outline"></ion-icon>
           </button>
         </div>

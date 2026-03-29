@@ -28,6 +28,9 @@ export class HomePage implements OnInit {
   public isLoadingCategorias = true;
   public productos: any[] = [];
 
+  isLoadingProductos  = true;
+  cartCount = 0;
+
   constructor(private data: DataService) {}
 
   ngOnInit() {
@@ -80,6 +83,10 @@ export class HomePage implements OnInit {
     });
   }*/
 
-    agregarAlCarrito(){}
+    agregarAlCarrito(event: Event, producto: WooProducto){
+    event.stopPropagation();
+    this.cartCount++;
+    // this.carritoService.agregar(producto);
+  }
 
 }

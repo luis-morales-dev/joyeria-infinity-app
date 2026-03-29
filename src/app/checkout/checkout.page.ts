@@ -17,6 +17,7 @@ export class CheckoutPage implements OnInit {
   constructor(private router:Router, private carrito:CarritoService) { }
 
   ngOnInit() {
+    /*
     let Items = this.carrito.getCart();
     let selected: any = {};
     
@@ -26,18 +27,7 @@ export class CheckoutPage implements OnInit {
   
       this.selectedItems = Object.keys(selected).map(key => selected[key])
       console.log('items: ', this.selectedItems);
-      this.total = this.selectedItems.reduce((a, b) => a + (b.quantity * b.price), 0);
-
-     /* if(this.selectedItems.length > 0){
-        for( var i = 0; i < this.selectedItems.length; i++ ){
-          //const price = this.selectedItems[i].price;
-          //let only_price = price.slice(1)
-          this.subtotal = this.selectedItems[i].price * this.selectedItems[i].quantity;
-          console.log(this.subtotal);
-          this.total = this.total + this.subtotal;
-          
-         }
-      }*/
+      this.total = this.selectedItems.reduce((a, b) => a + (b.quantity * b.price), 0);*/
   }
 
 }

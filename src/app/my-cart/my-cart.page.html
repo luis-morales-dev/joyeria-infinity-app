@@ -14,147 +14,107 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content fullscreen="true">
-  <h1 class="title">Mi carrito</h1>
+<ion-content>
 
-  <div class="cart-items">
-    <h4 class="ion-text-center">{{msg_cart}}</h4>
-    <ion-card mode="ios" *ngFor="let item of selectedItems; let i = index">
-      <ion-card-content>
-        <div class="item-img">
-          <img src="{{item.url_img}}" />
-        </div>
-        <div class="item-info">
-          <p>{{item.name_prod}}</p>
-          <p>{{item.category}}</p>
-          <p>${{item.price}}</p>
-          <p><small>Cant: {{item.quantity}}</small></p>
-        </div>
-      </ion-card-content>
-    </ion-card>
+  <ion-title>Mi carrito</ion-title>
+
+  <!-- Carrito vacío -->
+  <div class="empty-state" *ngIf="items.length === 0">
+    <div class="empty-icon-wrapper">
+      <ion-icon name="cart-outline"></ion-icon>
+    </div>
+    <h2 class="empty-title">Tu carrito está vacío</h2>
+    <p class="empty-subtitle">Agrega productos para comenzar tu compra</p>
+    <ion-button class="explore-btn" routerLink="/categories">
+      Explorar categorías
+      <ion-icon name="arrow-forward-outline" slot="end"></ion-icon>
+    </ion-button>
   </div>
 
-  <!--
-  <div class="cart-items">
-    <ion-card mode="ios">
-      <ion-card-content>
-        <div class="item-img">
-          <img src="../../assets/cart/cart1.png" />
+  <!-- Lista de productos -->
+  <div class="cart-list" *ngIf="items.length > 0">
+    <div class="cart-item" *ngFor="let item of items; let i = index">
+
+      <!-- Imagen -->
+      <div class="item-img-wrapper">
+        <img
+          [src]="item.producto.images[0]?.src"
+          [alt]="item.producto.name"
+        />
+      </div>
+
+      <!-- Info -->
+      <div class="item-info">
+        <p class="item-name">{{ item.producto.name }}</p>
+
+        <!-- Variaciones seleccionadas -->
+        <div class="item-variaciones" *ngIf="tieneVariaciones(item)">
+          <span
+            class="variacion-chip"
+            *ngFor="let v of getVariaciones(item)"
+          >{{ v }}</span>
         </div>
 
-        <div class="item-info">
-          <p>Pizza Pepperoni</p>
-          <p>Prueba</p>
-          <p>$34.00</p>
-
-          <div class="qty-selector">
-            <ion-button fill="clear">-</ion-button>
-            <ion-label>1</ion-label>
-            <ion-button fill="clear">+</ion-button>
+        <div class="item-bottom">
+          <!-- Control de cantidad -->
+          <div class="quantity-control">
+            <button class="qty-btn" (click)="cambiarCantidad(i, -1)">
+              <ion-icon name="remove-outline"></ion-icon>
+            </button>
+            <span class="qty-value">{{ item.cantidad }}</span>
+            <button class="qty-btn" (click)="cambiarCantidad(i, 1)">
+              <ion-icon name="add-outline"></ion-icon>
+            </button>
           </div>
-        </div>
-      </ion-card-content>
-    </ion-card>
 
-    <ion-card mode="ios">
-      <ion-card-content>
-        <div class="item-img">
-          <img src="../../assets/cart/cart2.png" />
+          <!-- Precio línea -->
+          <span class="item-price">
+            ${{ (parseFloat(item.producto.price) * item.cantidad).toFixed(2) }}
+          </span>
         </div>
+      </div>
 
-        <div class="item-info">
-          <p>Jugo del Valle 355ml</p>
-          <p>Bata</p>
-          <p>$44.00</p>
+      <!-- Botón eliminar -->
+      <button class="delete-btn" (click)="eliminarItem(i)">
+        <ion-icon name="close-outline"></ion-icon>
+      </button>
 
-          <div class="qty-selector">
-            <ion-button fill="clear">-</ion-button>
-            <ion-label>1</ion-label>
-            <ion-button fill="clear">+</ion-button>
-          </div>
-        </div>
-      </ion-card-content>
-    </ion-card>
-
-    <ion-card mode="ios">
-      <ion-card-content>
-        <div class="item-img">
-          <img src="../../assets/cart/cart3.png" />
-        </div>
-
-        <div class="item-info">
-          <p>Coca 355ml</p>
-          <p>Next</p>
-          <p>$54.00</p>
-
-          <div class="qty-selector">
-            <ion-button fill="clear">-</ion-button>
-            <ion-label>1</ion-label>
-            <ion-button fill="clear">+</ion-button>
-          </div>
-        </div>
-      </ion-card-content>
-    </ion-card>
-
-    <!--
-    <ion-card mode="ios">
-      <ion-card-content>
-        <div class="item-img">
-          <img src="../../assets/cart/cart4.png" />
-        </div>
-        <div class="item-info">
-          <p>Women shirt</p>
-          <p>Plus Point</p>
-          <p>$34.00</p>
-          <div class="qty-selector">
-            <ion-button fill="clear">-</ion-button>
-            <ion-label>1</ion-label>
-            <ion-button fill="clear">+</ion-button>
-          </div>
-        </div>
-      </ion-card-content>
-    </ion-card>
-    <ion-card mode="ios">
-      <ion-card-content>
-        <div class="item-img">
-          <img src="../../assets/cart/cart5.png" />
-        </div>
-        <div class="item-info">
-          <p>Shirt</p>
-          <p>Cat's Eye</p>
-          <p>$44.00</p>
-          <div class="qty-selector">
-            <ion-button fill="clear">-</ion-button>
-            <ion-label>1</ion-label>
-            <ion-button fill="clear">+</ion-button>
-          </div>
-        </div>
-      </ion-card-content>
-    </ion-card>
-  
+    </div>
   </div>
-  -->
+
+  <!-- Resumen del pedido -->
+  <div class="order-summary" *ngIf="items.length > 0">
+    <h3 class="summary-title">Resumen del pedido</h3>
+
+    <div class="summary-row">
+      <span>Subtotal ({{ totalItems }} productos)</span>
+      <span>${{ subtotal.toFixed(2) }}</span>
+    </div>
+    <div class="summary-row">
+      <span>Envío</span>
+      <span class="shipping-note">Calculado en checkout</span>
+    </div>
+
+    <div class="summary-divider"></div>
+
+    <div class="summary-row total-row">
+      <span>Total estimado</span>
+      <span>${{ subtotal.toFixed(2) }}</span>
+    </div>
+  </div>
+
 </ion-content>
 
-<!-- Bloque si no hay productos en el carrito -->
-<div *ngIf="is_empty; else elseBlock">
-  <ion-footer translucent="true" class="ion-no-border" mode="md">
-    <ion-toolbar color="translucent">
-      <ion-button expand="block" class="main-button" routerLink="/home" routerDirection="back">Ir al inicio</ion-button>
-    </ion-toolbar>
-  </ion-footer>
-</div>
-<!-- Bloque si hay productos en el carrito -->
-<ng-template #elseBlock>
-  <ion-footer>
-    <ion-row>
-      <ion-col size="6">
-        <ion-button expand="full" color="light" (click)="remove()">Borrar Carrito</ion-button>
-      </ion-col>
-      <ion-col size="6">
-        <ion-button expand="full" class="main-button" routerLink="/checkout">Hacer pedido</ion-button>
-      </ion-col>
-    </ion-row>
-  </ion-footer>
-</ng-template>  
-
+<!-- Footer con botón de checkout -->
+<ion-footer class="cart-footer" *ngIf="items.length > 0">
+  <div class="footer-inner">
+    <ion-button class="checkout-btn" (click)="irACheckout()">
+      <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
+      Proceder al pago
+    </ion-button>
+    <p class="secure-note">
+      <ion-icon name="shield-checkmark-outline"></ion-icon>
+      Pago seguro con SSL
+    </p>
+  </div>
+</ion-footer>

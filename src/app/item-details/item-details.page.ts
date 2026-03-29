@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Animation, AnimationController } from '@ionic/angular';
 import { DataService } from '../data.service';
-import { CarritoService } from '../carrito.service';
+import { CarritoService, ItemCarrito } from '../carrito.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ResponseInterface, WooCategoria, WooProducto, WooImagen } from 'src/app/modelos/response.interface';
 
@@ -153,7 +153,21 @@ export class ItemDetailsPage implements OnInit {
     this.activeSlide = event.detail[0].activeIndex ?? 0;
   }
 
-  agregarAlCarrito() {}
+  agregarAlCarrito() {
+    if (!this.producto) return;
+ 
+    const item = {
+      producto: this.producto,
+      cantidad: this.cantidad,
+      variaciones: this.selecciones,
+    };
+ 
+    // Aquí conecta tu servicio de carrito:
+    this.carrito.agregar(item.producto, item.cantidad, item.variaciones);
+ 
+    console.log('Agregado al carrito:', item);
+    this.cartCount++;
+  }
 
 
 }

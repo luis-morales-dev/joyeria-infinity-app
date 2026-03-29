@@ -29,7 +29,7 @@ export class DataService {
 
   //Datos tienda Woocommerce
   //private baseUrl = 'https://joyeriainfinity.com.mx/wp-json/wc/v3';
-  private baseUrl = environment.api_url;
+  private baseUrl = url_api;
   private ck = 'ck_bb124a88cccba82056e500e989ece6bf8982431f';
   private cs = 'cs_b61e132fd94845c9dc2df7e3ceaae347764b40f3';
 
@@ -68,8 +68,14 @@ export class DataService {
       .set('consumer_secret', this.cs);
   }
 
-  getProductos() {
-    return this.http.get(`${this.baseUrl}/products`, { params: this.getParams() });
+  getProductos(filters?: Record<string, string>): Observable<WooProducto[]> {
+    let params = this.getParams();
+    if (filters) {
+      Object.keys(filters).forEach(key => {
+        params = params.set(key, filters[key]);
+      });
+    }
+    return this.http.get<WooProducto[]>(`${this.baseUrl}/products`, { params });
   }
 
   getCategorias() {
@@ -85,6 +91,18 @@ export class DataService {
       `${this.baseUrl}/products/${id}`,
       { params: this.getParams() }
     );
+  }
+
+  getProductosPorCategoria(
+    categoriaId: number,
+    pagina: number = 1,
+    porPagina: number = 10
+  ): Observable<WooProducto[]> {
+    return this.getProductos({
+      category: String(categoriaId),
+      page:     String(pagina),
+      per_page: String(porPagina),
+    });
   }
 
   /*getProductos(params?: Record<string, string>): Observable<WooProducto[]> {
